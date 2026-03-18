@@ -22,7 +22,7 @@
 
 ### Overview
 
-GitHub Saver is a small TUI tool that backs up your GitHub repositories by cloning selected repositories into `./github_saves`.
+GitHub Saver is a small TUI tool that backs up your GitHub repositories by cloning selected repositories into `~/github_saves`.
 
 ---
 
@@ -45,7 +45,7 @@ github-saver
 
 - You need `git` installed and available in `PATH`.
 - The tool requires a GitHub API token. Do not use fine-grained tokens.
-- Selected repositories are cloned into `./github_saves`. If the folder exists, it will be deleted before cloning.
+- Selected repositories are cloned into `~/github_saves`. If the folder exists, it will be deleted before cloning.
 
 ---
 

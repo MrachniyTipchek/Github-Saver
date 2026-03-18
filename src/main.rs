@@ -1,5 +1,6 @@
 use std::io::{self, Write};
-use std::path::Path;
+use std::env;
+use std::path::PathBuf;
 use std::process::Command;
 use std::time::Duration;
 
@@ -18,6 +19,11 @@ struct Repo {
     name: String,
     full_name: String,
     clone_url: String,
+}
+
+fn saves_dir() -> anyhow::Result<PathBuf> {
+    let home = env::var_os("HOME").ok_or_else(|| anyhow::anyhow!("HOME directory not found"))?;
+    Ok(PathBuf::from(home).join("github_saves"))
 }
 
 fn main() {
@@ -62,7 +68,7 @@ fn main_menu_tui() -> anyhow::Result<MenuChoice> {
         queue!(stdout, Print("GitHub Saver\r\n"))?;
 
         let description_lines = [
-            "This script backs up your GitHub repositories into ./github_saves.",
+            "This script backs up your GitHub repositories into ~/github_saves.",
             "It requires a GitHub API token (do not use a fine-grained token).",
             "The token is used only in memory and is never saved anywhere.",
             "",
@@ -164,22 +170,24 @@ fn start_backup_flow() -> anyhow::Result<()> {
     }
 
     execute!(stdout, Clear(ClearType::All), MoveTo(0, 0))?;
-    println!("Starting cloning into ./github_saves");
+    println!("Starting cloning into ~/github_saves");
     stdout.flush()?;
 
-    if Path::new("github_saves").exists() {
-        std::fs::remove_dir_all("github_saves")?;
+    let saves = saves_dir()?;
+    if saves.exists() {
+        std::fs::remove_dir_all(&saves)?;
     }
-    std::fs::create_dir_all("github_saves")?;
+    std::fs::create_dir_all(&saves)?;
 
     for repo in selected {
         println!("Cloning {}...", repo.full_name);
         stdout.flush()?;
         let url = with_token_in_url(&repo.clone_url, &token);
+        let target = saves.join(&repo.name);
         let status = Command::new("git")
             .arg("clone")
             .arg(&url)
-            .arg(format!("github_saves/{}", repo.name))
+            .arg(target)
             .status()?;
         if !status.success() {
             println!("Failed to clone {}", repo.full_name);
@@ -331,7 +339,7 @@ fn draw_repo_list<W: Write>(
     }
     queue!(stdout, Print(controls_line), Print("\r\n"))?;
 
-    let warning = "Warning: existing repositories in ./github_saves will be deleted before cloning.";
+    let warning = "Warning: existing repositories in ~/github_saves will be deleted before cloning.";
     let mut warning_line = warning.to_string();
     if warning_line.len() > cols {
         warning_line.truncate(cols.saturating_sub(3));
