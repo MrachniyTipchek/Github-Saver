@@ -3,6 +3,18 @@
 version = 4
 
 [[package]]
+name = "Github-Saver"
+version = "1.0.0"
+dependencies = [
+ "anyhow",
+ "crossterm",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "unicode-width",
+]
+
+[[package]]
 name = "anyhow"
 version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -260,18 +272,6 @@ dependencies = [
  "r-efi",
  "wasip2",
  "wasip3",
-]
-
-[[package]]
-name = "github_saver"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "crossterm",
- "reqwest",
- "serde",
- "serde_json",
- "unicode-width",
 ]
 
 [[package]]

@@ -1,6 +1,6 @@
 [package]
-name = "github_saver"
-version = "0.1.0"
+name = "Github-Saver"
+version = "1.0.0"
 edition = "2024"
 
 [dependencies]
@@ -10,3 +10,7 @@ serde_json = "1.0"
 crossterm = "0.27"
 anyhow = "1.0"
 unicode-width = "0.1"
+
+[[bin]]
+name = "github-saver"
+path = "src/main.rs"

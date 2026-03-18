@@ -1,4 +1,5 @@
 use std::io::{self, Write};
+use std::path::Path;
 use std::process::Command;
 use std::time::Duration;
 
@@ -130,6 +131,7 @@ fn start_backup_flow() -> anyhow::Result<()> {
     let mut stdout = io::stdout();
     execute!(stdout, Clear(ClearType::All), MoveTo(0, 0))?;
     println!("Enter GitHub API token.");
+    println!("Do not use fine-grained tokens.");
     println!("The token will only be used in memory and will not be saved anywhere.");
     println!("Press Ctrl+C to cancel and return to the main menu.");
     print!("\n> ");
@@ -165,6 +167,9 @@ fn start_backup_flow() -> anyhow::Result<()> {
     println!("Starting cloning into ./github_saves");
     stdout.flush()?;
 
+    if Path::new("github_saves").exists() {
+        std::fs::remove_dir_all("github_saves")?;
+    }
     std::fs::create_dir_all("github_saves")?;
 
     for repo in selected {
@@ -324,7 +329,15 @@ fn draw_repo_list<W: Write>(
         controls_line.truncate(cols.saturating_sub(3));
         controls_line.push_str("...");
     }
-    queue!(stdout, Print(controls_line), Print("\r\n\r\n"))?;
+    queue!(stdout, Print(controls_line), Print("\r\n"))?;
+
+    let warning = "Warning: existing repositories in ./github_saves will be deleted before cloning.";
+    let mut warning_line = warning.to_string();
+    if warning_line.len() > cols {
+        warning_line.truncate(cols.saturating_sub(3));
+        warning_line.push_str("...");
+    }
+    queue!(stdout, Print(warning_line), Print("\r\n\r\n"))?;
 
     let max_name_width = cols.saturating_sub(6);
 
