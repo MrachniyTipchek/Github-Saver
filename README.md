@@ -51,7 +51,7 @@ github-saver
 
 ### Development
 
-![Languages][languages-shield] ![Build status][build-status-shield] ![Build tool][build-tool-shield]
+![Languages][languages-shield] ![Build tool][build-tool-shield]
 
 #### Project Structure
 
