@@ -32,7 +32,7 @@ GitHub Saver is a small TUI tool that backs up your GitHub repositories by cloni
 Install from GitHub:
 
 ```bash
-cargo install --git https://github.com/github/github_saver --locked
+cargo install --git https://github.com/MrachniyTipchek/Github-Saver --locked
 ```
 
 Run:
